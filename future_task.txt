@@ -1,0 +1,4 @@
+===TODO===
+1. Finish setting up structure
+2. Create GUI app. 
+3. Start using concurreny for multi-queued ordering/ canceling
