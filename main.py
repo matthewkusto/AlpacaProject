@@ -60,11 +60,11 @@ def get_asset(_symbol: str):  # Allow for user input
     assets = re.get(
         "{}/v2/assets/{}".format(url, _symbol.upper()), headers=keys
     ).content
-    info = json.loads(assets.decode("utf-8"))
+    asset_info = json.loads(assets.decode("utf-8"))
     selected_items = {
-        "name": info.get("name"),
-        "symbol": info.get("symbol"),
-        "exchange": info.get("exchange"),
+        "name": asset_info.get("name"),
+        "symbol": asset_info.get("symbol"),
+        "exchange": asset_info.get("exchange"),
     }
 
     return "\n".join(
