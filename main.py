@@ -15,34 +15,55 @@ def Main_Menu():
     print("| 4. Cancel Order        |")
     print("==========================")
     choice = input("Enter Selection: ")
-    match choice:
-        case "1":
-            print(accout_information())
-            print(type(accout_information()))
-        case "2":
-            get_asset()
-        case "3":
-            place_order()
-        case "4":
-            cancel_order()
-        case _:
-            print("Please make selection")
+    while choice != "x":
+        match choice:
+            case "1":
+                print(accout_information())
+            case "2":
+                symbol_ = input("Enter ticker symbol: ")
+                print((get_asset(symbol_)))
+            case "3":
+                # have two functions here. 1 or multiple
+                place_order()
+            case "4":
+                cancel_order()
+            case "x":
+                break
+            case _:
+                print("Please make selection")
+        choice = input("Enter Selection: ")
 
 
 def accout_information() -> str:
     acct_info = re.get("{}/v2/account".format(url), headers=keys).content
     # many ways to turn bytes to dict (an obj in JSON). The data.decode('utf-8'), str(data, 'utf-8'), bytearray(data)
-    info = json.loads(acct_info.decode("utf-8")) # This is now a dict (JSON obj)
-    return info
-    # return acct_info
-    # return 'id #' from 'id key', 'buying_power', 'portfolio value'
-    # for acct in acct_info:
-    #     return acct["buying_power"]
+    info = json.loads(acct_info.decode("utf-8"))  # This is now a dict (JSON obj)
+
+    selected_items = {
+        "buying_power": info.get("buying_power"),
+        "equity": info.get("equity"),
+        "portfolio_value": info.get("portfolio_value"),
+    }
+    
+    return "\n".join(
+        f"{key.capitalize()}: ${int(value):,}" for key, value in selected_items.items()
+    )
 
 
 def get_asset(_symbol: str):  # Allow for user input
-    assets = re.get("{url}/v2/assets/{}".format(_symbol.upper()), headers=keys)
-    return assets.content
+    assets = re.get(
+        "{}/v2/assets/{}".format(url, _symbol.upper()), headers=keys
+    ).content
+    info = json.loads(assets.decode("utf-8"))
+    selected_items = {
+        "name": info.get("name"),
+        "symbol": info.get("symbol"),
+        "exchange": info.get("exchange"),
+    }
+
+    return "\n".join(
+        f"{key.capitalize()}: {value}" for key, value in selected_items.items()
+    )  # return exchange, symbol, name
 
 
 # def create_order(object:list) -> list:
