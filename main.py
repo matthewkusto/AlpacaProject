@@ -13,6 +13,7 @@ def Main_Menu():
     print("| 2. Find Asset          |")
     print("| 3. Place Order         |")
     print("| 4. Cancel Order        |")
+    print("| x. Exit                |")
     print("==========================")
     choice = input("Enter Selection: ")
     while choice != "x":
@@ -24,7 +25,12 @@ def Main_Menu():
                 print((get_asset(symbol_)))
             case "3":
                 # have two functions here. 1 or multiple
-                place_order()
+                sym = input("Enter Ticker: ")
+                qty = int(input("Enter QTY: "))
+                buy_or_sell = input("Buy or Sell: ")
+                order_type = input("Market: ")
+                time_in_force = input("Trade type: ")
+                print((place_order(sym, qty, buy_or_sell, order_type, time_in_force)))
             case "4":
                 cancel_order()
             case "x":
@@ -72,6 +78,7 @@ def get_asset(_symbol: str):  # Allow for user input
 
 
 # Turn into async function for multi-order queue
+# Should return an order id
 def place_order(
     _symbol: str, _qty: int, _buy_or_sell: str, _order_type: str, _time_in_force: str
 ):
@@ -83,8 +90,10 @@ def place_order(
         "time_in_force": _time_in_force,
     }
 
-    order_placed = re.post("{}/v2/orders".format(url), json=order, headers=keys)
-    return order_placed.content
+    order_placed = re.post("{}/v2/orders".format(url), json=order, headers=keys).content
+    order_info = json.loads(order_placed.decode('utf-8'))
+    
+    return f'Order-ID: {order_info.get('id')}'
 
 
 # Single cancel orders ... Eventually turn into multi-cancel queue
