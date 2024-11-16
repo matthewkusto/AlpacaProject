@@ -32,7 +32,8 @@ def Main_Menu():
                 time_in_force = input("Trade type: ")
                 print((place_order(sym, qty, buy_or_sell, order_type, time_in_force)))
             case "4":
-                cancel_order()
+                _symbol_ = input("Enter ticker symbol to cancel order: ").upper()
+                cancel_order(_symbol_)
             case "x":
                 break
             case _:
@@ -52,7 +53,7 @@ def accout_information() -> str:
     }
     
     return "\n".join(
-        f"{key.capitalize()}: ${int(value):,}" for key, value in selected_items.items()
+        f"{key.capitalize()}: ${value}" for key, value in selected_items.items()
     )
 
 
@@ -101,7 +102,7 @@ def cancel_order(_symbol: str) -> str:
     order_canceled = re.delete(
         "{}/v2/positions/{}".format(url, _symbol.upper()), headers=keys
     )
-    print(order_canceled.content, "True")
+    print(order_canceled.content, True)
 
 
 if __name__ == "__main__":
